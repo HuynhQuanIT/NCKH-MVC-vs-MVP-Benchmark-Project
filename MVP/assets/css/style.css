@@ -1,0 +1,508 @@
+/* ===========================
+   CSS CHÍNH - TÔNG MÀU XANH TRẮNG
+   Nguyễn Hoàng Khánh Duy
+   =========================== */
+
+/* ---- Biến màu ---- */
+:root {
+    --blue-primary:   #1565C0;
+    --blue-hover:     #0D47A1;
+    --blue-light:     #E3F2FD;
+    --blue-sidebar:   #1976D2;
+    --white:          #ffffff;
+    --gray-light:     #f5f7fa;
+    --gray-border:    #BBDEFB;
+    --text-dark:      #1a1a2e;
+    --text-muted:     #546E7A;
+    --danger:         #c62828;
+    --danger-hover:   #b71c1c;
+}
+
+/* ---- Reset cơ bản ---- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: var(--gray-light);
+    color: var(--text-dark);
+    font-size: 15px;
+}
+
+a {
+    color: var(--blue-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--blue-hover);
+    text-decoration: underline;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ============================
+   LAYOUT TRANG CHỦ (index.php)
+   ============================ */
+
+.layout-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#left {
+    width: 20%;
+    vertical-align: top;
+    background-color: var(--blue-sidebar);
+    padding: 0;
+    border: none;
+}
+
+#right {
+    width: 80%;
+    vertical-align: top;
+    padding: 20px;
+    background-color: var(--white);
+    border: none;
+}
+
+/* Cột trái – banner + menu */
+.sidebar {
+    background-color: var(--blue-sidebar);
+    min-height: 100vh;
+    padding: 16px;
+}
+
+.sidebar a {
+    display: block;
+    color: var(--white);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 6px 0;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.sidebar a:hover {
+    background-color: var(--blue-hover);
+    text-decoration: none;
+}
+
+/* Nav top (Trang chủ, Đăng nhập, Đăng ký, Đăng xuất) */
+.top-nav {
+    background-color: var(--blue-primary);
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.top-nav a {
+    color: var(--white);
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 5px;
+    transition: background 0.2s;
+}
+
+.top-nav a:hover {
+    background-color: var(--blue-hover);
+    text-decoration: none;
+}
+
+/* Danh mục sản phẩm (sidebar) */
+.sidebar h2 {
+    color: var(--white);
+    font-size: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 6px;
+    margin: 14px 0 8px;
+}
+
+/* ============================
+   NÚT BẤM (Buttons)
+   ============================ */
+
+input[type="submit"],
+input[type="button"],
+button,
+.btn {
+    background-color: var(--blue-primary);
+    color: var(--white);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+input[type="submit"]:hover,
+input[type="button"]:hover,
+button:hover,
+.btn:hover {
+    background-color: var(--blue-hover);
+    transform: translateY(-1px);
+}
+
+input[type="reset"] {
+    background-color: var(--text-muted);
+    color: var(--white);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+input[type="reset"]:hover {
+    background-color: #37474F;
+}
+
+/* ============================
+   FORM CHUNG (login, register, add...)
+   ============================ */
+
+.form-container {
+    max-width: 440px;
+    margin: 40px auto;
+    background: var(--white);
+    border-radius: 10px;
+    padding: 36px 32px;
+    box-shadow: 0 4px 20px rgba(21,101,192,0.12);
+    border-top: 4px solid var(--blue-primary);
+}
+
+.form-container h2 {
+    color: var(--blue-primary);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+form label {
+    display: inline-block;
+    width: 130px;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+form input[type="text"],
+form input[type="password"],
+form input[type="number"],
+form input[type="email"],
+form select {
+    padding: 7px 12px;
+    border: 1.5px solid var(--gray-border);
+    border-radius: 6px;
+    font-size: 14px;
+    width: 220px;
+    transition: border-color 0.2s;
+    margin: 4px 0 10px 0;
+}
+
+form input[type="text"]:focus,
+form input[type="password"]:focus,
+form input[type="number"]:focus,
+form select:focus {
+    outline: none;
+    border-color: var(--blue-primary);
+    box-shadow: 0 0 0 3px rgba(21,101,192,0.1);
+}
+
+form input[type="file"] {
+    margin: 4px 0 10px 0;
+    font-size: 14px;
+}
+
+/* Login / Register – đơn giản */
+#right form {
+    background: transparent;
+    padding: 20px 0;
+    border: none;
+    border-radius: 0;
+    max-width: 100%;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* ============================
+   TÌM KIẾM
+   ============================ */
+
+#right h3 {
+    color: var(--blue-primary);
+    margin-bottom: 8px;
+}
+
+#right form[method="get"] {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 12px 0 16px 0;
+    max-width: 100%;
+}
+
+#right form[method="get"] input[type="text"] {
+    flex: 1;
+    max-width: 320px;
+    margin: 0;
+}
+
+/* ============================
+   DANH SÁCH SẢN PHẨM (listProduct)
+   ============================ */
+
+#right table:not(.admin-table):not(.admin-layout) {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 16px;
+}
+
+#right table:not(.admin-table):not(.admin-layout) td {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 14px;
+    width: 23%;
+    text-align: center;
+    box-shadow: none;
+    border: 1.5px solid var(--gray-border);
+    vertical-align: top;
+}
+
+
+
+#right table:not(.admin-table):not(.admin-layout) td img {
+    border-radius: 8px;
+    margin: 0 auto 8px;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+#right table:not(.admin-table):not(.admin-layout) td a {
+    color: var(--blue-primary);
+    font-weight: 600;
+}
+
+.price-old {
+    color: #c62828;
+    text-decoration: line-through;
+    margin-right: 6px;
+    font-size: 13px;
+}
+
+.price-sale {
+    color: var(--blue-primary);
+    font-weight: 700;
+    font-size: 15px;
+}
+
+/* ============================
+   TIÊU ĐỀ SECTION
+   ============================ */
+
+h2, h3 {
+    color: var(--blue-primary);
+    margin: 14px 0 10px;
+}
+
+h1 {
+    color: var(--blue-primary);
+}
+
+/* ============================
+   TRANG ADMIN
+   ============================ */
+
+.admin-wrap {
+    width: 100%;
+}
+
+.admin-layout {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-layout td {
+    vertical-align: top;
+    border: none;
+}
+
+.admin-left {
+    width: 20%;
+    background-color: var(--blue-sidebar);
+    padding: 16px;
+    min-height: 100vh;
+}
+
+.admin-right {
+    width: 80%;
+    padding: 24px;
+    background: var(--gray-light);
+}
+
+/* Menu Admin sidebar */
+.admin-menu a {
+    display: block;
+    color: var(--white);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 5px 0;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.admin-menu a:hover {
+    background-color: var(--blue-hover);
+    text-decoration: none;
+}
+
+.admin-menu h2 {
+    color: var(--white);
+    opacity: 0.85;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+    padding-bottom: 4px;
+    margin: 14px 0 6px;
+}
+
+.admin-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Thanh top admin */
+.admin-top-bar {
+    background-color: var(--blue-primary);
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.admin-top-bar a {
+    color: var(--white);
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 5px;
+    transition: background 0.2s;
+}
+
+.admin-top-bar a:hover {
+    background-color: var(--blue-hover);
+    text-decoration: none;
+}
+
+/* Bảng admin */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(21,101,192,0.08);
+}
+
+.admin-table th {
+    background-color: var(--blue-primary);
+    color: var(--white);
+    padding: 12px 10px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.admin-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--blue-light);
+    vertical-align: middle;
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table tr:hover td {
+    background-color: var(--blue-light);
+}
+
+.admin-table img {
+    border-radius: 6px;
+}
+
+/* Liên kết Sửa / Xóa trong bảng */
+.action-cell a {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+/* Sửa = xanh */
+.action-cell a:first-child {
+    background-color: var(--blue-primary);
+    color: var(--white);
+}
+
+.action-cell a:first-child:hover {
+    background-color: var(--blue-hover);
+    text-decoration: none;
+}
+
+/* Xóa = đỏ */
+.action-cell a:last-child {
+    background-color: var(--danger);
+    color: var(--white);
+}
+
+.action-cell a:last-child:hover {
+    background-color: var(--danger-hover);
+    text-decoration: none;
+}
+
+/* ============================
+   FOOTER
+   ============================ */
+
+footer {
+    text-align: center;
+    padding: 18px;
+    background-color: var(--blue-primary);
+    color: var(--white);
+    margin-top: 30px;
+}
+
+footer h2, footer H2 {
+    color: var(--white);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* ============================
+   BANNER / HEADER IMAGE
+   ============================ */
+
+.banner-img {
+    width: 100%;
+    height: auto;
+    display: block;
+}

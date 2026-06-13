@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <rect width="300" height="300" fill="#4F87C7"/>
+  <g transform="translate(150,115)" fill="#ffffff" opacity="0.9">
+    <path d="M-45,-40 L-15,-55 L0,-45 L15,-55 L45,-40 L55,-10 L35,0 L35,55 L-35,55 L-35,0 L-55,-10 Z"
+          fill="none" stroke="#ffffff" stroke-width="6" stroke-linejoin="round"/>
+  </g>
+  <text x="150" y="225" font-family="Arial, sans-serif" font-size="22" font-weight="bold"
+        fill="#ffffff" text-anchor="middle">Áo Thun</text>
+  <text x="150" y="255" font-family="Arial, sans-serif" font-size="13"
+        fill="#ffffff" opacity="0.75" text-anchor="middle">Ảnh đại diện danh mục</text>
+</svg>
