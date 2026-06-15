@@ -111,11 +111,3 @@ cũng cho kết quả giống nhau (dữ liệu mock dùng `srand(42)` — tái 
 > Không cần chạy lại Bước 1 và 2 nếu ảnh đã tồn tại trong `MVC/image/` và `MVP/image/`
 > — chỉ cần chạy lại Bước 3 để reset dữ liệu sản phẩm.
 
----
-
-## 6. Các file không còn sử dụng
-
-Các file sau là phiên bản cũ, không nằm trong quy trình build hiện tại,
-có thể xoá để tránh nhầm lẫn:
-- `seed_5000.php` (v1 — ảnh `sp{idx}.jpg` không tồn tại)
-- `seed_5000_v2.php` (v2 — không giữ 12 sản phẩm thật)
