@@ -3,15 +3,27 @@ include_once("model/mProduct.php");
 include_once("controller/cUpload.php");
 
 class cProduct{
-    public function cListProduct(){
+    // public function cListProduct(){
+    //     $p = new mProduct();
+    //     $rs = $p -> mListProduct();
+    //     if($rs -> num_rows>0){
+    //         return $rs;
+    //     }
+    //         return false;
+    // }
+
+    public function cListProduct($page = 1){
+
         $p = new mProduct();
-        $rs = $p -> mListProduct();
-        if($rs -> num_rows>0){
+
+        $rs = $p->mListProduct($page);
+
+        if($rs && $rs->num_rows > 0){
             return $rs;
         }
-            return false;
-    }
 
+        return false;
+    }
     public function cListProductByType($id){
         $p = new mProduct();
         $rs = $p -> mListProductByType($id);

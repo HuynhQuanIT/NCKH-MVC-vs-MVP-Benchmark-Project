@@ -2,23 +2,44 @@
 include_once("mKetNoi.php");
 
 class mProduct {
-    public function mListProduct() {
+    // public function mListProduct() {
+    //     $p = new mKetNoi();
+    //     $con = $p->moKetNoi();
+    //     if($con){
+	//         $rs = $con->query("SELECT p.*, t.typeName FROM products p LEFT JOIN type t ON p.idType = t.idType");
+    //         return $rs;
+    //     }
+    //         return false;
+    //     $p->dongKetNoi($con);
+
+    // }
+
+    public function mListProduct($page = 1, $limit = 100) {
+
         $p = new mKetNoi();
         $con = $p->moKetNoi();
+
         if($con){
-	        $rs = $con->query("SELECT p.*, t.typeName FROM products p LEFT JOIN type t ON p.idType = t.idType");
+
+            $offset = ($page - 1) * $limit;
+
+            $sql = "SELECT p.*, t.typeName
+                    FROM products p
+                    LEFT JOIN type t ON p.idType = t.idType
+                    LIMIT $offset, $limit";
+
+            $rs = $con->query($sql);
+
             return $rs;
         }
-            return false;
-        $p->dongKetNoi($con);
 
+        return false;
     }
-
-      public function mListProductByType($id) {
+    public function mListProductByType($id) {
         $p = new mKetNoi();
         $con = $p->moKetNoi();
         if($con){
-	        $rs = $con->query("SELECT p.*, t.typeName FROM products p LEFT JOIN type t ON p.idType = t.idType where t.idType='$id'");
+            $rs = $con->query("SELECT p.*, t.typeName FROM products p LEFT JOIN type t ON p.idType = t.idType where t.idType='$id'");
             return $rs;
         }
             return false;

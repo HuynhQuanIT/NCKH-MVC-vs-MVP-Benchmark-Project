@@ -1,113 +1,111 @@
 # NCKH — MVC vs MVP Benchmark Project
 
-So sánh kiến trúc **MVC** và **MVP** trên cùng một ứng dụng quản lý bán hàng PHP,
-kèm bộ dữ liệu mẫu ~5.012 sản phẩm (12 sản phẩm thật + 5.000 sản phẩm mock)
-và script benchmark đo hiệu suất thực thi trên database thật.
+So sánh kiến trúc **MVC** và **MVP** trên cùng ứng dụng quản lý bán hàng PHP,
+benchmark hiệu suất trên database thật ở 4 quy mô: **1.000 / 5.000 / 50.000 /
+500.000** sản phẩm, tách riêng thời gian **DB** và thời gian **xử lý PHP
+thuần** để thấy đúng khác biệt kiến trúc ở mọi quy mô.
 
 ---
 
-## 1. Cấu trúc thư mục
+## 1. Cấu trúc thư mục (rút gọn còn 2 file script)
 
 ```
 NCKH/
-├── MVC/                      # Phiên bản kiến trúc MVC
-│   ├── model/
-│   ├── controller/
-│   ├── view/
-│   ├── image/                # Ảnh sản phẩm (sinh tự động)
-│   └── index.php / admin.php
-├── MVP/                      # Phiên bản kiến trúc MVP
-│   ├── model/
-│   ├── presenter/
-│   ├── view/
-│   ├── image/                # Ảnh sản phẩm (sinh tự động)
-│   └── index.php / admin.php
-├── generate_images.php        # Bước 1 — sinh ảnh SVG theo loại (cho mock)
-├── generate_real_images.php    # Bước 2 — sinh ảnh JPG cho 12 sp thật
-├── seed_5000_v3.php             # Bước 3 — seed database (5.012 sản phẩm)
-└── benchmark_real_db.php         # Bước 4 — đo hiệu suất MVC vs MVP
+├── MVC/                          # Ứng dụng kiến trúc MVC
+├── MVP/                          # Ứng dụng kiến trúc MVP
+├── qlbh.sql                      # Schema + 12 sản phẩm thật ban đầu
+├── benchmark.php                 # File DUY NHẤT cần chạy: tự sinh ảnh
+│                                  # (nếu thiếu) + seed + benchmark 1 mức
+│                                  # hoặc cả 4 mức, lưu JSON
+├── chart.php                     # File thứ 2: chỉ đọc JSON, vẽ chart
+└── results_scalability.json      # Kết quả tích luỹ (tự sinh, đừng sửa tay)
 ```
+
+> Đã loại bỏ hoàn toàn `seed_lib.php`, `generate_images.php`,
+> `generate_real_images.php`, `seed_5000_v3.php`, `benchmark_step.php`,
+> `benchmark_chart.php`, `benchmark_real_db.php` (bản cũ) — toàn bộ logic
+> đã gộp vào `benchmark.php` + `chart.php`.
 
 ---
 
 ## 2. Yêu cầu môi trường
 
 - **Laragon** (hoặc XAMPP) — PHP 8.x + MySQL/MariaDB
-- Extension **GD** đã được bật (Laragon mặc định đã bật)
-- Database `qlbh` đã được tạo với schema gồm 4 bảng: `products`, `type`, `role`, `user`
-
-> Nếu chưa có schema, import file `qlbh.sql` (bảng `type` cần có ít nhất 5 dòng:
-> Áo Thun, Áo Khoác, Áo Sơ Mi, Áo Polo, Áo Nỉ và Len — idType 1–5) trước khi seed.
+- Extension **GD** đã bật (Laragon mặc định đã bật) — dùng để sinh ảnh JPG
+- Database `qlbh` đã import từ `qlbh.sql` (bảng `type` cần ≥5 dòng: Áo Thun,
+  Áo Khoác, Áo Sơ Mi, Áo Polo, Áo Nỉ và Len — idType 1–5)
 
 ---
 
-## 3. Hướng dẫn Build (build lại từ đầu)
+## 3. Build từ đầu — chỉ 2 file
 
-Đặt 4 file script vào thư mục gốc `NCKH/` (cùng cấp `MVC/`, `MVP/`), sau đó truy cập
-theo **đúng thứ tự** sau bằng trình duyệt:
+Đặt `benchmark.php` và `chart.php` vào thư mục gốc `NCKH/` (cùng cấp `MVC/`,
+`MVP/`, `qlbh.sql`).
 
-### Bước 1 — Sinh ảnh đại diện theo loại (cho 5.000 sp mock)
-```
-http://localhost/NCKH/generate_images.php
-```
-Tạo 5 ảnh SVG (`type_1.svg` ... `type_5.svg`), mỗi ảnh có màu riêng + tên loại,
-lưu vào cả `MVC/image/` và `MVP/image/`.
+### Bước 1 — Benchmark từng mức (hoặc cả 4 mức 1 lần)
 
-### Bước 2 — Sinh ảnh thật cho 12 sản phẩm gốc
 ```
-http://localhost/NCKH/generate_real_images.php
+http://localhost/NCKH/benchmark.php?mock=1000
+http://localhost/NCKH/benchmark.php?mock=5000
+http://localhost/NCKH/benchmark.php?mock=50000
+http://localhost/NCKH/benchmark.php?mock=500000
 ```
-Dùng GD tạo 12 ảnh JPG (300×300) đúng tên file trong `qlbh.sql`
-(`hinh1.jpg` ... `hinh8.jpg`, và các tên file dài như
-`ao-thun-nam-marvel-the-amazing-form-boxy.jpg`), màu nền theo `idType`,
-có chữ tên sản phẩm (rút gọn, không dấu).
+hoặc chạy liên tiếp cả 4 mức trong 1 request:
+```
+http://localhost/NCKH/benchmark.php?all=1
+```
 
-> ⚠ Nếu báo lỗi "Extension GD chưa được bật" → mở `php.ini`,
-> bỏ comment dòng `extension=gd`, restart Apache trong Laragon.
+Mỗi lần gọi `benchmark.php`, file tự động:
+1. Kiểm tra ảnh trong `MVC/image/`, `MVP/image/` — **chỉ sinh ảnh nào còn
+   thiếu** (5 SVG theo loại + 12 JPG sản phẩm thật), bỏ qua nếu đã đủ
+2. `TRUNCATE` + re-seed bảng `products` đúng N sản phẩm mock (giữ 12 sp thật
+   id 1–12)
+3. Chạy 4 bài toán T1 (Tìm kiếm), T2 (Render), T3 (Thống kê), T4 (Phân trang)
+   cho cả MVC và MVP, đo bằng `hrtime()` + `gc_collect_cycles()` +
+   `memory_get_peak_usage()`
+4. Tách 3 chỉ số mỗi bài toán: **full** (tổng) / **DB-only** (chỉ query+fetch)
+   / **PHP-only** = full − DB-only (phần xử lý/transform/render thuần PHP —
+   nơi MVC vs MVP khác biệt thật, không bị nhiễu bởi MySQL)
+5. Append kết quả vào `results_scalability.json` (giữ lại kết quả mức cũ)
+6. **DB giữ nguyên ở mức vừa chạy** — mở `MVC/index.php` / `MVP/index.php`
+   vẫn thấy đúng N sản phẩm
 
-### Bước 3 — Seed database
-```
-http://localhost/NCKH/seed_5000_v3.php
-```
-- Xóa toàn bộ dữ liệu cũ trong bảng `products`
-- Chèn lại **12 sản phẩm thật** (id 1–12, giữ nguyên tên/giá/ảnh từ `qlbh.sql`)
-- Sinh thêm **5.000 sản phẩm mock** (id 13–5012), ảnh theo loại (`type_X.svg`)
-- In bảng phân bổ số lượng sản phẩm theo từng loại để kiểm tra
+> Có thể chạy 4 lệnh `?mock=` ở 4 thời điểm khác nhau, không cần liên tiếp.
+> `?all=1` tiện nhưng sẽ chạy lâu (mức 500.000 tốn vài phút) và DB sẽ dừng ở
+> mức 500.000 sau khi xong. Muốn ép số vòng lặp tuỳ ý: thêm `&iters=100`.
 
-Kết quả mong đợi: tổng **5.012 bản ghi** trong `products`.
+### Bước 2 — Xem biểu đồ
 
-### Bước 4 (tuỳ chọn) — Benchmark hiệu suất MVC vs MVP
 ```
-http://localhost/NCKH/benchmark_real_db.php
+http://localhost/NCKH/chart.php
 ```
-Chạy 4 bài toán (Tìm kiếm, Render, Thống kê, Phân trang) trên dữ liệu thật,
-100 vòng lặp/bài toán, đo bằng `hrtime()` + `gc_collect_cycles()` +
-`memory_get_peak_usage()`. Kết quả hiển thị bảng so sánh MVC vs MVP
-(µs/request, peak memory) và so sánh với kết quả benchmark mock (không DB).
+Chỉ đọc `results_scalability.json`, **không kết nối DB** → load tức thì.
+Hiển thị:
+1. Bảng chi tiết full / DB-only / PHP-only theo từng mức
+2. Chart xu hướng tổng thời gian (full) — MVC vs MVP
+3. Chart xu hướng PHP-only time (đã loại DB) — nơi khác biệt kiến trúc rõ nhất
+4. Bar chart % chênh lệch MVP so với MVC theo từng mức (PHP-only)
 
 ---
 
-## 4. Kiểm tra kết quả
+## 4. Kiểm tra ứng dụng
 
-Mở 1 trong 2 ứng dụng:
+Sau khi chạy `benchmark.php` ở mức bất kỳ:
 ```
 http://localhost/NCKH/MVC/index.php
 http://localhost/NCKH/MVP/index.php
 ```
-
-- 12 sản phẩm đầu danh sách là **sản phẩm thật** (tên đầy đủ tiếng Việt, ảnh JPG có chữ)
-- 5.000 sản phẩm còn lại là **mock** (`Sản phẩm A00000`, `B00001`, ...), ảnh SVG theo loại
-- Click từng danh mục ở sidebar (Áo Thun, Áo Khoác...) để kiểm tra lọc theo `idType`
-  hiển thị đúng cả sản phẩm thật và mock thuộc loại đó
+- 12 sản phẩm đầu là sản phẩm thật (tên đầy đủ, ảnh JPG)
+- Còn lại là mock (`Sản phẩm A000000`...), ảnh SVG theo loại
+- Click sidebar từng danh mục để kiểm tra lọc theo `idType`
 
 ---
 
-## 5. Build lại từ đầu (reset toàn bộ)
+## 5. Reset lại từ đầu
 
-Chạy lại đúng thứ tự **Bước 1 → 2 → 3** (Bước 4 tuỳ chọn). `seed_5000_v3.php` luôn
-`TRUNCATE` bảng `products` trước khi chèn lại, nên có thể chạy lại bao nhiêu lần
-cũng cho kết quả giống nhau (dữ liệu mock dùng `srand(42)` — tái lập được).
-
-> Không cần chạy lại Bước 1 và 2 nếu ảnh đã tồn tại trong `MVC/image/` và `MVP/image/`
-> — chỉ cần chạy lại Bước 3 để reset dữ liệu sản phẩm.
-
+1. Xoá `results_scalability.json` nếu muốn benchmark lại sạch từ đầu (không
+   bắt buộc — chạy lại 1 mức sẽ tự ghi đè đúng mức đó).
+2. Ảnh trong `MVC/image/`, `MVP/image/` không cần xoá — `benchmark.php` chỉ
+   sinh lại nếu thiếu. Muốn ép sinh lại toàn bộ ảnh: xoá thư mục `image/` rồi
+   chạy `benchmark.php` bất kỳ mức nào.
+3. Chạy lại các mức cần qua `benchmark.php?mock=...` rồi mở `chart.php`.

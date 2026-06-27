@@ -8,8 +8,13 @@ class cAdmin
 {
 	public function getProducts()
 	{
+		// $p = new cProduct();
+		// return $p->cListProduct();
+
+		$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
 		$p = new cProduct();
-		return $p->cListProduct();
+		$tbl = $p->cListProduct($page);
 	}
 
 	public function getTypes()
