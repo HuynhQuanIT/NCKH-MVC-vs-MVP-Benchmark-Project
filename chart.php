@@ -10,9 +10,9 @@
  *   2. PHP-only time (full - DB-only) — nơi MVC vs MVP khác biệt thật
  *   3. % chênh lệch PHP-only MVP so với MVC theo từng mức
  *
- *  Trục X dùng SỐ SẢN PHẨM MOCK THUẦN (1.000 / 5.000 / 50.000 /
- *  500.000) — không cộng thêm 12 sản phẩm thật để số liệu tròn,
- *  dễ đọc, đúng với 4 mức bạn đã chạy benchmark.
+ *  Trục X dùng SỐ SẢN PHẨM MOCK (1.000 / 5.000 / 50.000 / 500.000) —
+ *  đây cũng chính là tổng số bản ghi trong bảng products, vì benchmark.php
+ *  đã bỏ hoàn toàn 12 sản phẩm thật cố định, chỉ còn data mock thuần.
  *
  *  MVC = đường liền, chấm tròn, màu xanh dương (#2f6fb3)
  *  MVP = đường đứt,  chấm vuông, màu xanh lá  (#2a9d6f)
@@ -197,13 +197,13 @@ td.left { text-align: left; }
 <small style="font-size:10pt">1.000 → 500.000 sản phẩm mock, đơn vị: giây (s)</small></h1>
 
 <div class="status">
-Các mức đã có dữ liệu: <b><?= implode(', ', array_map(fn($x) => number_format($x, 0, '.', '.'), $totalsX)) ?></b> sản phẩm mock (chưa tính 12 sản phẩm thật cố định).
+Các mức đã có dữ liệu: <b><?= implode(', ', array_map(fn($x) => number_format($x, 0, '.', '.'), $totalsX)) ?></b> sản phẩm.
 Muốn thêm/làm lại 1 mức: chạy <code>benchmark.php?mock=N</code>.
 </div>
 
 <h2>1. Bảng chi tiết theo từng mức (full / DB-only / PHP-only)</h2>
 <?php foreach ($mocks as $m): $entry = $all[$m]; ?>
-<h3 style="font-size:11pt;margin-top:18px">Mức <?= number_format((int)$m,0,'.','.') ?> sản phẩm mock (tổng <?= number_format($entry['total'],0,'.','.') ?> bản ghi, <?= $entry['iters'] ?> vòng lặp)</h3>
+<h3 style="font-size:11pt;margin-top:18px">Mức <?= number_format((int)$m,0,'.','.') ?> sản phẩm (<?= $entry['iters'] ?> vòng lặp)</h3>
 <table>
 <tr><th class="left">Bài toán</th><th>Full MVC (s)</th><th>Full MVP (s)</th><th>DB-only (s)</th><th>PHP-only MVC (s)</th><th>PHP-only MVP (s)</th><th>% chênh PHP-only</th></tr>
 <?php foreach ($entry['tests'] as $key => $t):
@@ -225,17 +225,8 @@ Muốn thêm/làm lại 1 mức: chạy <code>benchmark.php?mock=N</code>.
 </table>
 <?php endforeach; ?>
 
-<h2>2. Tổng thời gian (full = DB + PHP) — xu hướng theo quy mô</h2>
-<p class="note">Ở mức lớn, 2 đường gần như trùng nhau vì DB I/O chiếm đa số thời gian.</p>
-<div class="charts">
-<?php foreach ($testKeys as $tk):
-    $mvcVals = array_map(fn($m) => $all[$m]['tests'][$tk]['full_mvc'], $mocks);
-    $mvpVals = array_map(fn($m) => $all[$m]['tests'][$tk]['full_mvp'], $mocks);
-    echo render_trend_chart("$tk — {$labels[$tk]} (full)", $totalsX, $mvcVals, $mvpVals);
-endforeach; ?>
-</div>
 
-<h2>3. PHP-only time (đã loại DB/network) — nơi MVC vs MVP khác biệt thật</h2>
+<h2>2. PHP-only time (đã loại DB/network) — nơi MVC vs MVP khác biệt thật</h2>
 <p class="note">php_only = full − db_only. Ở mức 500.000, số vòng lặp ít hơn (5–8 lần) nên dễ bị nhiễu — nếu thấy đường gãy bất thường ở điểm cuối, đó là nhiễu đo, không phải xu hướng thật; nên chạy lại <code>benchmark.php?mock=500000&iters=20</code> vài lần để xác nhận.</p>
 <div class="charts">
 <?php foreach ($testKeys as $tk):
@@ -245,21 +236,7 @@ endforeach; ?>
 endforeach; ?>
 </div>
 
-<h2>4. % chênh lệch PHP-only (MVP so với MVC) theo quy mô</h2>
-<p class="note">Dương = MVC nhanh hơn; âm = MVP nhanh hơn.</p>
-<div class="charts">
-<?php foreach ($testKeys as $tk):
-    $diffPct = [];
-    foreach ($mocks as $m) {
-        $t = $all[$m]['tests'][$tk];
-        $diffPct[] = $t['php_mvc'] > 0 ? round(($t['php_mvp'] - $t['php_mvc']) / $t['php_mvc'] * 100, 2) : 0;
-    }
-    echo render_diff_bar_chart("$tk — {$labels[$tk]}", $totalsX, $diffPct);
-endforeach; ?>
-</div>
-
 <p class="note" style="margin-top:24px">
-    File này chỉ đọc <code>results_scalability.json</code>, không kết nối DB — load tức thì, F5 lại bao nhiêu lần cũng được.<br>
     Để cập nhật/thêm mức mới: chạy <a href="benchmark.php">benchmark.php?mock=N</a> rồi quay lại trang này.
 </p>
 
